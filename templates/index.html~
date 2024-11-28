@@ -1,0 +1,13 @@
+<html>
+ <head>
+    <title>Football World Cup Database</title>
+ </head>
+  <form action="/search" method="GET">
+    <label for="country">Country:</label>
+    <input type="text" id="country" name="country" placeholder="Enter country name">
+    <label for="year">Year:</label>
+    <input type="number" id="year" name="year" placeholder="Enter year">
+    <button type="submit">Search</button>
+  </form>
+ </body>
+</html>
