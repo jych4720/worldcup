@@ -20,6 +20,7 @@ def search():
 
     # If both country and year are provided
     if country and year:
+        country1 = country.capitalize()
         # Convert country to lowercase for case-insensitive comparison
         country = country.lower()
         
@@ -34,14 +35,27 @@ def search():
         # Prepare the matches for display
         matches = filtered_df.select(['Year', 'Stage', 'Home Team Name', 'Home Team Goals', 'Away Team Name', 'Away Team Goals', 'Win conditions']).to_dicts()
         # Render the result
-        return render_template('result1.html', matches=matches)
+        return render_template('result1.html', matches=matches, title=f"Year: {year}, Country: {country1}")
 
     elif year:
         filtered_df = df.filter(df['Year'] == int(year))
         matches = filtered_df.select(['Year', 'Stage', 'Home Team Name', 'Home Team Goals', 'Away Team Name', 'Away Team Goals', 'Win conditions']).to_dicts()
-        return render_template('result1.html', matches=matches)
+        return render_template('result1.html', matches=matches, title=f"Year: {year}, Country: {country}")
         
-
+    elif country:
+        country = country.lower()
+        participated_years = (
+            df.filter((df['Home Team Name'].str.to_lowercase().str.contains(country)) | 
+                      (df['Away Team Name'].str.to_lowercase().str.contains(country)))
+              .select('Year').unique().sort(by='Year').to_series().to_list()
+        )
+        if not participated_years:
+            return f"Country: {country.capitalize()} has never participated in a World Cup."
+        return render_template(
+            'result3.html',
+            title=f"Country: {country.capitalize()}",
+            years=participated_years
+        )
     # If only one is entered, show error
     return "Error: Please enter both country and year."
 
