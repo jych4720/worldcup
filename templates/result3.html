@@ -4,13 +4,20 @@
 </head>
 <body>
     <h1>{{ title }}</h1>
-    {% if years %}
-        <p>{{ title }} participated in the following World Cups:</p>
-        <ul>
-            {% for year in years %}
-                <li>{{ year }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    
+    <h2>Country Stats</h2>
+    <ul>
+        <li>Matches Played: {{ matches_played }}</li>
+        <li>Number of Championships: {{ num_champions }}</li>
+    </ul>
+
+    <h3>Years Participated:</h3>
+    <ul>
+        {% for year in years %}
+            <li>{{ year }}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="/">Back to Home</a>
 </body>
 </html>
