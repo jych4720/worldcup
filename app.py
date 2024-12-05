@@ -72,5 +72,27 @@ def search():
 
     return "Error: Please enter year or country for searching."
 
+@app.route('/search_two_countries', methods=['GET'])
+def search_two_countries():
+    country1 = request.args.get('country1')
+    country2 = request.args.get('country2')
+
+    country1 = country1.lower()
+    country2 = country2.lower()
+
+    df = pl.read_csv('data/WorldCupMatches.csv')
+    
+    # Filter for matches between the two countries
+    filtered_df = df.filter(
+        ((df['Home Team Name'].str.to_lowercase().str.contains(country1)) & (df['Away Team Name'].str.to_lowercase().str.contains(country2))) | 
+        ((df['Home Team Name'].str.to_lowercase().str.contains(country2)) & (df['Away Team Name'].str.to_lowercase().str.contains(country1)))
+    )
+    
+    if filtered_df.is_empty():
+        return f"No matches found between {country1.capitalize()} and {country2.capitalize()}."
+    
+    matches = filtered_df.select(['Year', 'Stage', 'Home Team Name', 'Home Team Goals', 'Away Team Name', 'Away Team Goals', 'Win conditions']).to_dicts()
+
+    return render_template('result4.html', matches=matches, country1=country1.capitalize(), country2=country2.capitalize())
 if __name__ == '__main__':
     app.run(debug=True)

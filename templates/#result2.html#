@@ -1,0 +1,41 @@
+<html>
+<head>
+    <title>{{ title }}</title>
+</head>
+<body>
+    <h1>{{ title }}</h1>
+
+     <a href="/" class="back-button" style="display:inline-block; margin-bottom: 20px; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Back to Home</a>
+
+    <table border="1" cellspacing="0" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Stage</th>
+                <th>Home Team</th>
+                <th>Home Goals</th>
+                <th>Away Team</th>
+                <th>Away Goals</th>
+                <th>Win Conditions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for match in matches %}
+            <tr>
+                <td>{{ match['Stage'] }}</td>
+                <td>{{ match['Home Team Name'] }}</td>
+                <td>{{ match['Home Team Goals'] }}</td>
+                <td>{{ match['Away Team Name'] }}</td>
+                <td>{{ match['Away Team Goals'] }}</td>
+                <td>{{ match['Win conditions'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if champion %}
+        <p>Champion: {{ champion }}</p>
+        {% if photo %}
+            <img src="{{ photo }}" alt="Champion Team Photo" style="width: 1000px; height: auto;">
+        {% endif %}
+    {% endif %}
+</body>
+</html>

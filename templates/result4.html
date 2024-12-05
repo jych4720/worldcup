@@ -1,0 +1,36 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matches Between {{ country1 }} and {{ country2 }}</title>
+</head>
+<body>
+    <h1>Matches Between {{ country1 }} and {{ country2 }}</h1>
+    <a href="/" class="back-button">Back to Home</a>
+
+    {% if matches %}
+        <table border="1" cellspacing="0" cellpadding="5">
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Stage</th>
+                    <th>Match</th>
+                    <th>Comment</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for match in matches %}
+                    <tr>
+                        <td>{{ match['Year'] }}</td>
+                        <td>{{ match['Stage'] }}</td>
+                        <td>{{ match['Home Team Name'] }} {{ match['Home Team Goals'] }} : {{ match['Away Team Goals'] }} {{ match['Away Team Name'] }}</td>
+                        <td>{{ match['Win conditions'] if match['Win conditions'] and match['Win conditions']|length > 100 else '' }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No matches found between {{ country1 }} and {{ country2 }}.</p>
+    {% endif %}
+</body>
+</html>
