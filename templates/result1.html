@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,7 +23,9 @@
                     <td>{{ match['Year'] }}</td>
                     <td>{{ match['Stage'] }}</td> <!-- Display Stage -->
                     <td>{{ match['Home Team Name'] }} {{ match['Home Team Goals'] }} : {{ match['Away Team Goals'] }} {{ match['Away Team Name'] }}</td>
-                    <td>{{ match['Win conditions'] if match['Win conditions'] else 'N/A' }}</td>
+                    <td>{{ match['Win conditions'] if match['Win conditions'] and match['Win conditions']|length > 100 else '' }}</td>
+
+
                 </tr>
             {% endfor %}
         </tbody>

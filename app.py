@@ -17,6 +17,7 @@ def search():
             return "No World Cup held in this year."
     # Load the CSV file
     df = pl.read_csv('data/WorldCupMatches.csv')
+    df = df.unique(maintain_order=True)
     # If both country and year are provided
     if country and year:
         country1 = country.capitalize()
