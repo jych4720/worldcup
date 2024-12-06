@@ -1,7 +1,9 @@
 import polars as pl
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session
+import random
 
 app = Flask(__name__)
+app.secret_key = '001203'
 champion_df = pl.read_csv('data/world_cup.csv')
 @app.route('/')
 def index():
@@ -94,5 +96,59 @@ def search_two_countries():
     matches = filtered_df.select(['Year', 'Stage', 'Home Team Name', 'Home Team Goals', 'Away Team Name', 'Away Team Goals', 'Win conditions']).to_dicts()
 
     return render_template('result4.html', matches=matches, country1=country1.capitalize(), country2=country2.capitalize())
+
+@app.route('/quiz', methods=['GET', 'POST'])
+def quiz():
+    if request.method == 'POST':
+        # Retrieve user answers
+        user_answers = request.form.to_dict()
+        score = 0
+        results = []
+
+        # Get the quiz questions stored in the session
+        for i, q in enumerate(session.get('quiz_questions', [])):
+            correct = q["answer"]
+            user_answer = user_answers.get(f"question{i}", "").strip()  # Adjust to match the input names
+            if user_answer.lower() == correct.lower():
+                score += 1
+            results.append({
+                "question": q["question"],
+                "correct": correct,
+                "user_answer": user_answer
+            })
+
+        # Render results page
+        return render_template('quiz_results.html', results=results, score=score, total=len(results))
+
+    # Generate fixed 5 questions: 3 "Who won" and 2 "How many wins"
+    years = champion_df['Year'].to_list()
+    random_years = random.sample(years, k=5)  # Pick 5 random years for questions
+    
+    quiz_questions = []
+
+  
+    for year in random_years[:3]:
+        champion = champion_df.filter(champion_df['Year'] == year)['Champion'].to_list()
+        if champion:
+            champion = champion[0]
+        else:
+            continue 
+        quiz_questions.append({
+            "question": f"Who won the {year} World Cup?",
+            "answer": champion
+        })
+
+   
+    for year in random_years[3:]:
+        country = champion_df.filter(champion_df['Year'] == year)['Champion'].to_list()[0]
+        # Count how many times the country won the World Cup
+        wins = champion_df.filter(champion_df['Champion'] == country).shape[0]
+        quiz_questions.append({
+            "question": f"How many World Cups did {country} win?",
+            "answer": str(wins)
+        })
+
+    session['quiz_questions'] = quiz_questions  # Store in session for grading
+    return render_template('quiz.html', questions=quiz_questions)
 if __name__ == '__main__':
     app.run(debug=True)
